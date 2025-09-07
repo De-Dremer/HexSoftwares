@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PulseFit Gym — Strength • Cardio • Community</title>
+  <meta name="description" content="Single-page gym website showcasing facilities, services, and membership plans." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============= CSS VARIABLES ============= */
+    :root{
+      --bg: #0b0d10;
+      --panel: #10141a;
+      --soft: #151a21;
+      --muted: #9aa4b2;
+      --text: #e7ecf3;
+      --brand: #7c5cff;
+      --brand-2: #04d1c8;
+      --accent: #ff6b6b;
+      --ring: #2a2f39;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius-xl: 18px;
+      --radius-2xl: 26px;
+      --container: 1200px;
+    }
+
+    /* ============= GLOBALS ============= */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
+    body{
+      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color: var(--text); background: radial-gradient(1200px 1200px at 10% -10%, rgba(124,92,255,.12), transparent 60%),
+                              radial-gradient(900px 900px at 110% 10%, rgba(4,209,200,.10), transparent 60%),
+                              var(--bg);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(100% - 2rem, var(--container)); margin-inline: auto; }
+    .grid { display: grid; gap: 1.25rem; }
+    .btn { display: inline-flex; align-items: center; gap: .6rem; padding: .9rem 1.15rem; border-radius: 12px; font-weight: 600; border: 1px solid var(--ring); background: linear-gradient(180deg, #1a1f27, #12161c); box-shadow: var(--shadow); }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.primary{ background: linear-gradient(90deg, var(--brand), var(--brand-2)); border: none; color: #0a0d12; }
+    .badge { padding: .25rem .6rem; border: 1px solid var(--ring); border-radius: 999px; font-size: .75rem; color: var(--muted); }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border: 1px solid var(--ring); border-radius: var(--radius-xl); padding: 1.25rem; backdrop-filter: blur(4px); box-shadow: var(--shadow); }
+    section { scroll-margin-top: 90px; }
+
+    /* ============= NAVBAR ============= */
+    .nav-wrap { position: sticky; top: 0; z-index: 999; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(10,13,18,.8), rgba(10,13,18,.55)); border-bottom: 1px solid var(--ring);} 
+    nav.container { display: flex; align-items: center; justify-content: space-between; padding: .85rem 0; }
+    .brand { display: flex; align-items: center; gap: .7rem; font-weight: 800; letter-spacing: .2px; }
+    .brand .logo { width: 34px; height: 34px; border-radius: 10px; background: conic-gradient(from 0deg, var(--brand), var(--brand-2), var(--brand)); display: grid; place-items: center; box-shadow: inset 0 0 14px rgba(0,0,0,.3); }
+    .brand .logo svg { width: 20px; height: 20px; }
+    .nav-links { display: flex; gap: 1rem; align-items: center; }
+    .nav-links a { padding: .55rem .8rem; border-radius: 10px; color: var(--muted); font-weight: 600; }
+    .nav-links a.active, .nav-links a:hover { background: #131822; color: var(--text); }
+    .hamb { display:none; border:1px solid var(--ring); padding:.55rem .7rem; border-radius:10px; }
+
+    @media (max-width: 850px){
+      .nav-links { position: fixed; inset: 60px 1rem auto 1rem; background: var(--panel); border:1px solid var(--ring); border-radius: 14px; padding: .6rem; display: none; flex-direction: column; }
+      .nav-links.open { display: flex; }
+      .hamb { display: inline-flex; }
+    }
+
+    /* ============= HERO ============= */
+    .hero { padding: 5.5rem 0 4rem; }
+    .hero .wrap { display: grid; gap: 2rem; grid-template-columns: 1.2fr .8fr; align-items: center; }
+    .hero h1 { font-size: clamp(2rem, 2.8vw + 1rem, 3.5rem); line-height: 1.1; margin: .35rem 0 1rem; }
+    .hero p.lead { color: var(--muted); font-size: 1.05rem; }
+    .hero .cta { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 1.1rem; }
+    .statbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; margin-top: 1.25rem; }
+    .stat { background: var(--soft); border:1px solid var(--ring); border-radius: 14px; padding: .9rem; text-align:center; }
+    .stat .num { font-weight: 800; font-size: 1.35rem; }
+    .poster { position: relative; height: 430px; border: 1px solid var(--ring); border-radius: var(--radius-2xl); overflow: hidden; background:
+      radial-gradient(600px 200px at 80% 10%, rgba(124,92,255,.35), transparent 60%),
+      radial-gradient(400px 250px at 30% 80%, rgba(4,209,200,.35), transparent 60%),
+      linear-gradient(180deg, #121620, #0d1117);
+      box-shadow: var(--shadow);
+    }
+    .poster .inner { position:absolute; inset:0; display:grid; place-items:center; }
+    .poster .phone { width: min(92%, 420px); aspect-ratio: 10/19; border-radius: 28px; border: 2px solid #222936; background: #0b0f16; box-shadow: 0 20px 40px rgba(0,0,0,.45), inset 0 0 0 10px #0f141c; overflow: hidden; }
+    .poster .screen { height: 100%; background: linear-gradient(180deg, rgba(124,92,255,.06), transparent), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 760"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="%2304d1c8" offset="0"/><stop stop-color="%237c5cff" offset="1"/></linearGradient></defs><g fill="none" stroke="url(%23g)" opacity="0.2"><circle cx="200" cy="200" r="120"/><circle cx="220" cy="260" r="200"/><circle cx="180" cy="520" r="160"/></g></svg>') center/cover no-repeat; display: grid; place-items:center; }
+    .screen h3 { margin: 0; padding: 1rem; text-align: center; }
+
+    @media (max-width: 950px){
+      .hero .wrap{ grid-template-columns: 1fr; }
+      .poster{ height: 360px; }
+    }
+
+    /* ============= SECTION HEADERS ============= */
+    .section-head { display:flex; align-items:center; justify-content:space-between; gap: 1rem; margin-bottom: 1rem; }
+    .section-head h2 { font-size: clamp(1.4rem, 1.2vw + 1rem, 2.1rem); margin: 0; }
+    .section-head .note { color: var(--muted); font-size: .95rem; }
+
+    /* ============= FACILITIES ============= */
+    .cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .cards .card { padding: 1.25rem; }
+    .icon { width: 40px; height: 40px; border-radius: 12px; display:grid; place-items:center; background: linear-gradient(180deg, #1b2030, #121826); border:1px solid var(--ring); box-shadow: inset 0 -10px 20px rgba(124,92,255,.12); }
+    .card h3 { margin: .9rem 0 .35rem; font-size: 1.08rem; }
+    .card p { color: var(--muted); margin: 0; }
+
+    @media (max-width: 900px){ .cards{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px){ .cards{ grid-template-columns: 1fr; } }
+
+    /* ============= SERVICES (CLASSES) ============= */
+    .classes { display:grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; }
+    .classes .list { display:grid; gap: .8rem; }
+    .class-item { display:flex; gap: .9rem; align-items:center; padding: .9rem; border:1px solid var(--ring); background: var(--soft); border-radius: 14px; }
+    .class-item strong { font-size: 1rem; }
+    .class-item span { color: var(--muted); font-size: .92rem; }
+    .classes .visual { border:1px solid var(--ring); border-radius: var(--radius-xl); min-height: 280px; background: linear-gradient(180deg, #151b26, #0f141c); display:grid; place-items:center; }
+
+    @media (max-width: 950px){ .classes{ grid-template-columns: 1fr; } }
+
+    /* ============= PRICING ============= */
+    .pricing-toggle { display:flex; align-items:center; gap: .6rem; padding:.4rem; border:1px solid var(--ring); border-radius: 999px; background: var(--soft); }
+    .toggle-btn { padding:.45rem .7rem; border-radius: 999px; font-weight:700; color: var(--muted); }
+    .toggle-btn.active { background: linear-gradient(90deg, var(--brand), var(--brand-2)); color:#0a0d12; }
+    .pricing { display:grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+    .price-card { padding: 1.2rem; border:1px solid var(--ring); border-radius: var(--radius-xl); background: linear-gradient(180deg, #181f2a, #10161f); position: relative; overflow: hidden; }
+    .price-card.popular { outline: 2px solid var(--brand); }
+    .price-card h3 { margin:.2rem 0; }
+    .price { font-weight: 800; font-size: 2.1rem; }
+    .per { color: var(--muted); font-size:.95rem; }
+    .features { margin: .9rem 0; padding: 0; list-style: none; display:grid; gap: .5rem; }
+    .features li { display:flex; gap:.6rem; align-items:flex-start; }
+    .features svg { flex: 0 0 auto; margin-top: .2rem; }
+
+    @media (max-width: 900px){ .pricing{ grid-template-columns: 1fr; } }
+
+    /* ============= GALLERY ============= */
+    .gallery { display:grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+    .tile { aspect-ratio: 4/3; border-radius: 14px; overflow:hidden; border:1px solid var(--ring); background: linear-gradient(180deg, #1b2130, #0e131a); position:relative; }
+    .tile::after{ content:""; position:absolute; inset:0; background: radial-gradient(500px 300px at 80% 0%, rgba(124,92,255,.16), transparent 40%); }
+    @media (max-width: 900px){ .gallery{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px){ .gallery{ grid-template-columns: 1fr; } }
+
+    /* ============= CTA / CONTACT ============= */
+    .cta { display:grid; grid-template-columns: 1fr .9fr; gap: 1rem; }
+    .cta .map { min-height: 260px; border:1px solid var(--ring); border-radius: var(--radius-xl); background: radial-gradient(300px 200px at 75% 25%, rgba(4,209,200,.18), transparent 40%), radial-gradient(300px 220px at 25% 85%, rgba(124,92,255,.18), transparent 40%), linear-gradient(180deg, #121721, #0f141b); display:grid; place-items:center; }
+    .cta form { display:grid; gap:.8rem; }
+    .field { display:grid; gap:.35rem; }
+    .field input, .field textarea, .field select { width:100%; padding:.9rem 1rem; border-radius:12px; border:1px solid var(--ring); background:#0e131b; color:var(--text); }
+    .field textarea{ min-height: 110px; }
+    @media (max-width: 950px){ .cta{ grid-template-columns: 1fr; } }
+
+    /* ============= UTILITIES ============= */
+    .spacious { padding: 3.2rem 0; }
+    .muted { color: var(--muted); }
+    .center { text-align:center; }
+    .sep { height: 1px; background: linear-gradient(90deg, transparent, #1e2530, transparent); margin: 2rem 0; }
+
+    /* ============= FOOTER + MISC ============= */
+    footer { padding: 2rem 0 3rem; color: var(--muted); }
+    .footer-grid { display:grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 1rem; }
+    @media (max-width: 950px){ .footer-grid{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px){ .footer-grid{ grid-template-columns: 1fr; } }
+
+    /* Back to top */
+    #toTop { position: fixed; right: 1rem; bottom: 1rem; padding:.65rem .7rem; border-radius: 10px; border:1px solid var(--ring); background: #0f141b; display:none; }
+
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="nav-wrap" role="navigation" aria-label="Main Navigation">
+    <nav class="container">
+      <a href="#home" class="brand">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v18M18 3v18"/><path d="M3 8h18M3 16h18"/></svg>
+        </span>
+        <span>PULSE<span style="color:var(--brand-2)">FIT</span> GYM</span>
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#facilities">Facilities</a>
+        <a href="#services">Services</a>
+        <a href="#pricing">Membership</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+        <a class="btn primary" href="#pricing" aria-label="Join now">Join Now</a>
+      </div>
+
+      <button class="hamb" id="hamb" aria-label="Toggle menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero container" id="home">
+    <div class="wrap">
+      <div>
+        <span class="badge">Strength • Cardio • Community</span>
+        <h1>Build strength. Boost endurance. Become your best self.</h1>
+        <p class="lead">A modern fitness space with expert coaches, premium equipment, and science-backed programs designed to help you hit your goals—faster.</p>
+        <div class="cta">
+          <a href="#pricing" class="btn primary">Start 7‑Day Trial</a>
+          <a href="#facilities" class="btn">Explore Facilities</a>
+        </div>
+        <div class="statbar" role="list" aria-label="Key stats">
+          <div class="stat" role="listitem"><div class="num">1000+ m²</div><div class="muted">Training space</div></div>
+          <div class="stat" role="listitem"><div class="num">50+</div><div class="muted">Premium machines</div></div>
+          <div class="stat" role="listitem"><div class="num">24/7</div><div class="muted">Member access</div></div>
+        </div>
+      </div>
+      <div class="poster" aria-hidden="true">
+        <div class="inner">
+          <div class="phone">
+            <div class="screen">
+              <h3>Track workouts • Book classes • See progress</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="sep" aria-hidden="true"></div>
+
+  <!-- FACILITIES -->
+  <section id="facilities" class="spacious container">
+    <div class="section-head">
+      <h2>Facilities</h2>
+      <p class="note">Top-tier equipment and purposeful spaces for every goal.</p>
+    </div>
+
+    <div class="cards" role="list">
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🏋️</div>
+        <h3>Strength Zone</h3>
+        <p>Racks, platforms, bumper plates, kettlebells, and dumbbells up to 60kg.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🚴</div>
+        <h3>Cardio Theater</h3>
+        <p>Treadmills, air bikes, rowers, and StairMasters with heart-rate tracking.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🧘</div>
+        <h3>Studio & Flex</h3>
+        <p>Spacious studio for HIIT, yoga, and mobility with mirrored walls.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🧪</div>
+        <h3>Recovery Lab</h3>
+        <p>Ice bath, sauna, compression boots, and guided cooldown protocols.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🥤</div>
+        <h3>Fuel Bar</h3>
+        <p>Protein shakes, electrolytes, and snacks tailored to your plan.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🔒</div>
+        <h3>Secure Lockers</h3>
+        <p>Keyless lockers, showers, and fresh towel service included.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🌐</div>
+        <h3>24/7 Access</h3>
+        <p>Members-only access with app entry and live gym traffic view.</p>
+      </article>
+      <article class="card" role="listitem">
+        <div class="icon" aria-hidden="true">🧑‍⚕️</div>
+        <h3>Coach Desk</h3>
+        <p>Certified trainers available for assessments and custom plans.</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="sep" aria-hidden="true"></div>
+
+  <!-- SERVICES / CLASSES -->
+  <section id="services" class="spacious container">
+    <div class="section-head">
+      <h2>Services & Programs</h2>
+      <div class="badge">Personal training • Group classes • Nutrition</div>
+    </div>
+    <div class="classes">
+      <div class="list" role="list" aria-label="Available classes">
+        <div class="class-item" role="listitem">
+          <div class="icon" aria-hidden="true">⚡</div>
+          <div>
+            <strong>Metcon 45</strong><br>
+            <span>High-intensity metabolic conditioning • 45 min • All levels</span>
+          </div>
+        </div>
+        <div class="class-item" role="listitem">
+          <div class="icon" aria-hidden="true">🧘</div>
+          <div>
+            <strong>Mobility Flow</strong><br>
+            <span>Release tension, improve range of motion • 40 min</span>
+          </div>
+        </div>
+        <div class="class-item" role="listitem">
+          <div class="icon" aria-hidden="true">🏃</div>
+          <div>
+            <strong>Engine Builder</strong><br>
+            <span>Zone 2 cardio & intervals • 30–50 min</span>
+          </div>
+        </div>
+        <div class="class-item" role="listitem">
+          <div class="icon" aria-hidden="true">🥊</div>
+          <div>
+            <strong>Box & Burn</strong><br>
+            <span>Technique + calorie torch • 50 min</span>
+          </div>
+        </div>
+        <div class="class-item" role="listitem">
+          <div class="icon" aria-hidden="true">🍽️</div>
+          <div>
+            <strong>Nutrition Consult</strong><br>
+            <span>Macro planning, body comp scans & habit coaching</span>
+          </div>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="center">
+          <h3>Book a free assessment</h3>
+          <p class="muted">Meet a coach, review goals, and get a tailored plan.</p>
+          <a href="#contact" class="btn primary">Schedule Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep" aria-hidden="true"></div>
+
+  <!-- PRICING -->
+  <section id="pricing" class="spacious container">
+    <div class="section-head">
+      <h2>Membership Plans</h2>
+      <div class="pricing-toggle" role="tablist" aria-label="Billing period">
+        <button class="toggle-btn active" role="tab" aria-selected="true" data-period="monthly">Monthly</button>
+        <button class="toggle-btn" role="tab" aria-selected="false" data-period="yearly">Yearly <span class="badge">Save 15%</span></button>
+      </div>
+    </div>
+
+    <div class="pricing" role="list">
+      <article class="price-card" role="listitem">
+        <span class="badge">Starter</span>
+        <h3>Basic Access</h3>
+        <div class="price" data-monthly="₹1499" data-yearly="₹1275">₹1499</div>
+        <div class="per">/month • Cancel anytime</div>
+        <ul class="features">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> 24/7 gym floor access</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Cardio & strength equipment</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Locker & showers</li>
+        </ul>
+        <a href="#contact" class="btn primary" aria-label="Get Basic plan">Get Started</a>
+      </article>
+
+      <article class="price-card popular" role="listitem" aria-label="Most popular plan">
+        <span class="badge" style="background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#0a0d12;">Most Popular</span>
+        <h3>Plus</h3>
+        <div class="price" data-monthly="₹2499" data-yearly="₹2125">₹2499</div>
+        <div class="per">/month • PT discounts</div>
+        <ul class="features">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Everything in Basic</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Unlimited group classes</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Body comp scan (monthly)</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Recovery lab access</li>
+        </ul>
+        <a href="#contact" class="btn primary" aria-label="Choose Plus plan">Choose Plus</a>
+      </article>
+
+      <article class="price-card" role="listitem">
+        <span class="badge">Elite</span>
+        <h3>Personal Training</h3>
+        <div class="price" data-monthly="₹4999" data-yearly="₹4250">₹4999</div>
+        <div class="per">/month • 1:1 coaching</div>
+        <ul class="features">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Weekly PT session</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Custom program & nutrition</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Priority booking</li>
+        </ul>
+        <a href="#contact" class="btn primary" aria-label="Choose Elite plan">Go Elite</a>
+      </article>
+    </div>
+  </section>
+
+  <div class="sep" aria-hidden="true"></div>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="spacious container">
+    <div class="section-head">
+      <h2>Gallery</h2>
+      <p class="note">Take a peek inside the space.</p>
+    </div>
+    <div class="gallery">
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+      <div class="tile" aria-label="Gym image placeholder"></div>
+    </div>
+  </section>
+
+  <div class="sep" aria-hidden="true"></div>
+
+  <!-- CTA / CONTACT -->
+  <section id="contact" class="spacious container">
+    <div class="section-head">
+      <h2>Ready to start?</h2>
+      <p class="note">Claim your free assessment and 7‑day trial. We'll get back within 24 hours.</p>
+    </div>
+    <div class="cta">
+      <form id="contactForm" aria-label="Contact form" class="card">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" placeholder="Alex Johnson" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label for="plan">Plan</label>
+          <select id="plan" name="plan" aria-label="Select plan">
+            <option>Basic</option>
+            <option>Plus</option>
+            <option>Elite</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="msg">Goals / Message</label>
+          <textarea id="msg" name="message" placeholder="Tell us about your goals…"></textarea>
+        </div>
+        <button class="btn primary" type="submit">Request Callback</button>
+        <p class="muted" id="formMsg" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="map card" aria-label="Map placeholder">
+        <div class="center">
+          <h3>Visit us</h3>
+          <p class="muted">123 Pulse Street, Fitness District, Your City</p>
+          <p>Open 24/7 • Staff 6am–10pm</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><span class="logo" aria-hidden="true"></span><strong>PULSEFIT GYM</strong></div>
+        <p class="muted">Where smart training meets strong community.</p>
+      </div>
+      <div>
+        <strong>Hours</strong>
+        <p class="muted">Mon–Sun: 24/7 Access<br>Staffed: 6:00–22:00</p>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <p class="muted">+91 98765 43210<br>hello@pulsefit.example</p>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:1rem">© <span id="year"></span> PulseFit Gym. All rights reserved.</p>
+  </footer>
+
+  <button id="toTop" aria-label="Back to top">↑</button>
+
+  <script>
+    // ======= MOBILE NAV =======
+    const hamb = document.getElementById('hamb');
+    const navLinks = document.getElementById('navLinks');
+    hamb?.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks?.addEventListener('click', (e) => {
+      if(e.target.tagName === 'A') navLinks.classList.remove('open');
+    });
+
+    // ======= SCROLLSPY =======
+    const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const idx = sections.indexOf(entry.target);
+        if(entry.isIntersecting){
+          links.forEach(l => l.classList.remove('active'));
+          if(links[idx]) links[idx].classList.add('active');
+        }
+      })
+    }, { rootMargin: '-50% 0px -50% 0px', threshold: .01 });
+    sections.forEach(sec => spy.observe(sec));
+
+    // ======= PRICING TOGGLE =======
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const prices = document.querySelectorAll('.price');
+    toggleBtns.forEach(btn => btn.addEventListener('click', () => {
+      toggleBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      const period = btn.dataset.period;
+      prices.forEach(p => {
+        const value = p.getAttribute(period === 'yearly' ? 'data-yearly' : 'data-monthly');
+        p.textContent = value;
+      });
+    }));
+
+    // ======= CONTACT FORM (DEMO) =======
+    const form = document.getElementById('contactForm');
+    const formMsg = document.getElementById('formMsg');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      formMsg.textContent = `Thanks, ${data.name}! We\'ll contact you about the ${data.plan} plan.`;
+      form.reset();
+    });
+
+    // ======= BACK TO TOP =======
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+      toTop.style.display = window.scrollY > 600 ? 'inline-flex' : 'none';
+    });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ======= FOOTER YEAR =======
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
